@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Add Category 
+{% endblock %}
+
+{% block content %}
+    <h1>Add Category</h1>
+    <form  method="post" class="form">
+    <label for="servicename" class="form-label">Name
+    <input type="text" name="servicename" id="servicename" class="form-control" required>
+    </label>
+    <br>
+    <label for="serviceprice" class="form-label">Price
+    <input type="text" name="serviceprice" id="serviceprice" class="form-control" required>
+    </label>
+    <br>
+    <label for="servicedescription" class="form-label">Description
+    <input type="text" name="servicedescription" id="servicedescription" class="form-control" required>
+    </label>
+    <br>
+    <label for="servicetime" class="form-label">Time
+    <input type="text" name="servicetime" id="servicetime" class="form-control" required>
+    </label>
+    <br>
+    <input type="submit" value="Add Service" class="btn btn-success">
+    </form>
+{% endblock %}
+
+{% block style %}
+    <style>
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+{% endblock %}
