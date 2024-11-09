@@ -37,7 +37,7 @@ def admin():
         flash('Unauthorized Access')
         session.pop('user_id', None)
         return redirect(url_for('login'))
-    return render_template('admin.html', user=user, service=Service.query.all())
+    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.all())
 
 
 @app.route('/cprofile')
@@ -112,7 +112,7 @@ def cregister():
 
 @app.route('/pregister')
 def pregister():
-    return render_template('pregister.html')
+    return render_template('pregister.html',service=Service.query.all())
 
 @app.route('/cregister', methods=['POST'])
 def cregister_post():
@@ -152,9 +152,8 @@ def pregister_post():
         return redirect(url_for('pregister'))
     file_path = os.path.join('uploads', profile.filename)
     profile.save(file_path) #doubtful
-    service_id=Service.query.get_service_id(service) #doubtful
     status='Pending'
-    puser=Professional(username=username, password=password, name=name, contact=contact, service_id=service_id, experience=experience, pincode=pincode,status=status, profile=file_path)
+    puser=Professional(username=username, password=password, name=name, contact=contact, service_id=service, experience=experience, pincode=pincode,status=status, profile=file_path)
     db.session.add(puser)
     db.session.commit()
     flash('Professional successfully Registered')

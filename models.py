@@ -36,7 +36,7 @@ class Professional(db.Model):
     experience=db.Column(db.Integer, nullable=False)
     pincode=db.Column(db.String(8), nullable=False)
     utype=db.Column(db.String(16), nullable=False, default='Professional')
-    status=db.Column(db.Boolean, nullable=True, default='Pending')
+    status=db.Column(db.String(16), nullable=True, default='Pending')
     profile=db.Column(db.String(512), nullable=False)
     
     @property

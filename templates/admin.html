@@ -44,6 +44,35 @@ Admin Dashboard
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <div class="heading">
+        <h2 class="text-muted">Professionals</h2>
+    </div>
+    <table class="table">
+        <thead>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Service</th>
+            <th>Status</th>
+            
+        </thead>
+        <tbody>
+            {% for p in professional %}
+                <tr>
+                    <td>{{p.username}}</td>
+                    <td>{{p.name}}</td>
+                    <td>{{p.contact}}</td>
+                    <td>{{p.service_id}}</td>
+                    <td>{{p.status}}</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <div class="heading">
+        <h2 class="text-muted">Service Requests</h2>
+    </div>
 {% endblock %}
 
 {% block style %}
