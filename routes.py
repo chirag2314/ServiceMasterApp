@@ -171,7 +171,7 @@ def add_services():
 
 @app.route('/services/addservice', methods=['POST'])
 @auth_required
-def add_category_post():
+def add_service_post():
     name=request.form.get('servicename')
     price=request.form.get('serviceprice')
     description=request.form.get('servicedescription')
@@ -189,9 +189,44 @@ def add_category_post():
 @app.route('/services/<int:service_id>/edit')
 @auth_required
 def edit_service(service_id):
-    return ""
+    return render_template('services/editservice.html', service=Service.query.get(service_id))
+
+@app.route('/services/<int:service_id>/edit', methods=['POST'])
+@auth_required
+def edit_service_post(service_id):
+    service=Service.query.get(service_id)
+    if not service:
+        flash('Service Does Not Exist')
+        return redirect(url_for('admin'))
+    name=request.form.get('servicename')
+    price=request.form.get('serviceprice')
+    description=request.form.get('servicedescription')
+    time=request.form.get('servicetime')
+    if name == '' or price == '' or description == '' or time == '':
+        flash('fields cannot be empty.')
+        return redirect(url_for('edit_service'))
+    service.name=name
+    service.price=price
+    service.description=description
+    service.time=time
+    db.session.commit()
+    flash('Service Edited Successfully')
+    return redirect(url_for('admin'))
+
 
 @app.route('/services/<int:service_id>/delete')
 @auth_required
 def delete_service(service_id):
-    return ""
+    return render_template('services/deleteservice.html', service=Service.query.get(service_id))
+
+@app.route('/services/<int:service_id>/delete', methods=['POST'])
+@auth_required
+def delete_service_post(service_id):
+    service=Service.query.get(service_id)
+    if not service:
+        flash('Service Does Not Exist')
+        return redirect(url_for('admin'))
+    db.session.delete(service)
+    db.session.commit()
+    flash('Service Deleted successfully')
+    return redirect(url_for('admin'))

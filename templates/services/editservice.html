@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-Add Service 
+Edit Service 
 {% endblock %}
 
 {% block content %}
-    <h1>Add Service</h1>
+    <h1>Edit Service</h1>
+    <h2>You are currently editing the Service {{service.name}}</h2>
     <form  method="post" class="form">
     <label for="servicename" class="form-label">Name
     <input type="text" name="servicename" id="servicename" class="form-control" required>
@@ -23,14 +24,15 @@ Add Service
     <input type="text" name="servicetime" id="servicetime" class="form-control" required>
     </label>
     <br>
-    <input type="submit" value="Add Service" class="btn btn-success">
+    <input type="submit" value="Edit Service" class="btn btn-success">
     </form>
 {% endblock %}
 
 {% block style %}
     <style>
-        h1 {
+        h1,h2 {
             text-align: center;
+            padding: 10px;
         }
         form {
             display: flex;
