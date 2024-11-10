@@ -18,6 +18,24 @@ def auth_required(func):
         return func(*args, **kwargs)
     return inner
 
+def admin_required(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please Login')
+            return redirect(url_for('login'))
+        user=Customer.query.get(session['user_id'])
+        if not user.is_admin:
+            flash('Unauthorized Access')
+            return redirect(url_for('cprofile'))
+        user=Professional.query.get(session['user_id'])
+        if not user:
+            flash('Unauthorized Access')
+            return redirect(url_for('pprofile'))
+        return func(*args, **kwargs)
+    return inner
+
+
 @app.route('/')
 @auth_required
 def defaultpage():
@@ -30,7 +48,7 @@ def defaultpage():
         return render_template('defaultpage.html', user=Customer.query.get(session['user_id']))
 
 @app.route('/admin')
-@auth_required
+@admin_required
 def admin():
     user=Customer.query.get(session['user_id'])
     if not user.is_admin:
@@ -165,12 +183,12 @@ def logout():
     return redirect(url_for('login'))
 
 @app.route('/services/addservice')
-@auth_required
+@admin_required
 def add_services():
     return render_template('services/addservice.html', user=Customer.query.get(session['user_id']))
 
 @app.route('/services/addservice', methods=['POST'])
-@auth_required
+@admin_required
 def add_service_post():
     name=request.form.get('servicename')
     price=request.form.get('serviceprice')
@@ -187,12 +205,12 @@ def add_service_post():
 
 
 @app.route('/services/<int:service_id>/edit')
-@auth_required
+@admin_required
 def edit_service(service_id):
     return render_template('services/editservice.html', service=Service.query.get(service_id))
 
 @app.route('/services/<int:service_id>/edit', methods=['POST'])
-@auth_required
+@admin_required
 def edit_service_post(service_id):
     service=Service.query.get(service_id)
     if not service:
@@ -215,12 +233,12 @@ def edit_service_post(service_id):
 
 
 @app.route('/services/<int:service_id>/delete')
-@auth_required
+@admin_required
 def delete_service(service_id):
     return render_template('services/deleteservice.html', service=Service.query.get(service_id))
 
 @app.route('/services/<int:service_id>/delete', methods=['POST'])
-@auth_required
+@admin_required
 def delete_service_post(service_id):
     service=Service.query.get(service_id)
     if not service:
