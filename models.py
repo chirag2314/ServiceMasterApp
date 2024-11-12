@@ -58,6 +58,8 @@ class Service(db.Model):
     description=db.Column(db.String(512), nullable=False)
     time=db.Column(db.Integer,nullable=False)
 
+    professionals=db.relationship('Professional', backref='service', lazy=True)
+
     def get_service_id(self, service):
         return id
 
@@ -73,6 +75,10 @@ class ServiceRequest(db.Model):
     rating=db.Column(db.String(32), nullable=False)
     review=db.Column(db.String(512), nullable=True)
     datetime=db.Column(db.DateTime,nullable=False)
+
+    customers=db.relationship('Customer', backref='servicerequests', lazy=True)
+    services=db.relationship('Service', backref='servicerequests', lazy=True)
+    professionals=db.relationship('Professional', backref='servicerequests', lazy=True)
 
 with app.app_context():
     db.create_all()

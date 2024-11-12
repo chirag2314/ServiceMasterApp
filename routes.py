@@ -28,10 +28,6 @@ def admin_required(func):
         if not user.is_admin:
             flash('Unauthorized Access')
             return redirect(url_for('cprofile'))
-        user=Professional.query.get(session['user_id'])
-        if not user:
-            flash('Unauthorized Access')
-            return redirect(url_for('pprofile'))
         return func(*args, **kwargs)
     return inner
 
