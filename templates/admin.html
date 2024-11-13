@@ -55,7 +55,7 @@ Admin Dashboard
             <th>Contact</th>
             <th>Service</th>
             <th>Status</th>
-            
+            <th>Actions</th>
         </thead>
         <tbody>
             {% for p in professional %}
@@ -64,7 +64,11 @@ Admin Dashboard
                     <td>{{p.name}}</td>
                     <td>{{p.contact}}</td>
                     <td>{{p.service_id}}</td>
-                    <td>{{p.status}}</td> 
+                    <td>{{p.status}}</td>
+                    <td><a class="btn btn-primary" href="{{url_for('update_professional', professional_id=p.id)}}">
+                        <i class="fas fa-edit fa-xs"></i>
+                        Edit
+                    </a></td> 
                 </tr>
             {% endfor %}
         </tbody>

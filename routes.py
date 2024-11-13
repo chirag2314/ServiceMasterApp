@@ -244,3 +244,22 @@ def delete_service_post(service_id):
     db.session.commit()
     flash('Service Deleted successfully')
     return redirect(url_for('admin'))
+
+
+@app.route('/services/<int:professional_id>/updatestatus')
+@admin_required
+def update_professional(professional_id):
+    return render_template('professionals/updatestatus.html', professional=Professional.query.get(professional_id))
+
+@app.route('/services/<int:professional_id>/updatestatus', methods=['POST'])
+@admin_required
+def update_professional_post(professional_id):
+    professional=Professional.query.get(professional_id)
+    if not professional:
+        flash('Professional does not exist')
+        return redirect(url_for('admin'))
+    status=request.form.get('status')
+    professional.status=status
+    db.session.commit()
+    flash('Professional Status Updated Successfully')
+    return redirect(url_for('admin'))
