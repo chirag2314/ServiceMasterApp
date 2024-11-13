@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Customer Dashboard 
+{% endblock %}
+
+{% block content %}
+<br>
+<h1>Hello, {{user.name}}</h1>
+<br>
+<h2>Services for you:</h2>
+{% include 'searchbar.html' with context %}
+<br>
+<div class="service-list">
+    {% for s in services %}
+        <div class="service-info">
+            <h4>{{s.name}}</h4>
+            <p>{{s.description}}</p>
+            <form action="{{url_for('cservices', service_id=s.id)}}" method="POST">
+                <input type="submit" value="Check Professionals" class="btn btn-success">
+            </form>
+        </div>
+    {% endfor %}
+</div>
+<br>
+<h3>Your active Services:</h3>
+<table class="table">
+    <thead>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Service</th>
+        <th>Status</th>
+        
+    </thead>
+    <tbody>
+        {% for p in professional %}
+            <tr>
+                <td>{{p.username}}</td>
+                <td>{{p.name}}</td>
+                <td>{{p.contact}}</td>
+                <td>{{p.service_id}}</td>
+                <td>{{p.status}}</td>
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block style%}
+<style>
+
+</style>
+{% endblock %}

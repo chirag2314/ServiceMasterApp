@@ -11,6 +11,7 @@ class Customer(db.Model):
     username=db.Column(db.String(32), nullable=False, unique=True)
     passwordhash=db.Column(db.String(512), nullable=False)
     name=db.Column(db.String(64), nullable=False)
+    pincode=db.Column(db.String(8), nullable=False)
     utype=db.Column(db.String(16), nullable=False, default='Customer')
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -84,6 +85,6 @@ with app.app_context():
     db.create_all()
     cadmin = Customer.query.filter_by(username='admin').first()
     if not cadmin:
-        admin=Customer(username='admin', password='admin', name='admin', is_admin=True)
+        admin=Customer(username='admin', password='admin', name='admin', pincode='000000', is_admin=True)
         db.session.add(admin)
         db.session.commit()

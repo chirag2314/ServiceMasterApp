@@ -118,7 +118,9 @@ def login_post():
             return redirect(url_for('login'))
         session['user_id'] = cuser.id
         type='C'
-        return redirect(url_for('cprofile'))
+        if cuser.is_admin:
+            return redirect(url_for('admin'))
+        return redirect(url_for('cdashboard'))
 
 @app.route('/cregister')
 def cregister():
@@ -132,14 +134,15 @@ def pregister():
 def cregister_post():
     username=request.form.get('username')
     password=request.form.get('password')
+    pincode=request.form.get('pincode')
     name=request.form.get('name')
-    if username == '' or password == '' or name == '':
+    if username == '' or password == '' or pincode == '' or name == '':
         flash('fields cannot be empty.')
         return redirect(url_for('cregister'))
     if Customer.query.filter_by(username=username).first():
         flash('Username not available, please choose some other username')
         return redirect(url_for('cregister'))
-    cuser=Customer(username=username, password=password, name=name)
+    cuser=Customer(username=username, password=password, pincode=pincode, name=name)
     db.session.add(cuser)
     db.session.commit()
     flash('Customer successfully Registered.')
@@ -263,3 +266,17 @@ def update_professional_post(professional_id):
     db.session.commit()
     flash('Professional Status Updated Successfully')
     return redirect(url_for('admin'))
+
+@app.route('/cdashboard')
+@auth_required
+def cdashboard():
+    user=Customer.query.get(session['user_id'])
+    pincode=user.pincode
+    return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
+
+@app.route('/cservices/<int:service_id>', methods=['POST'])
+@auth_required
+def cservices(service_id):
+    user=Customer.query.get(session['user_id'])
+    pincode=user.pincode
+    return render_template('cservice.html',user=user, services=Service.query.filter_by(id=service_id), professional=Professional.query.filter_by(status='Approved', pincode=pincode, service_id=service_id))

@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Choose your Professional 
+{% endblock %}
+
+{% block content %}
+<h1>Hello {{user.name}},</h1>
+<h3>Please choose your professional:</h3>
+<table class="table">
+    <thead>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Contact</th>
+        <th>Pincode</th>
+        <th>Experience</th>
+    </thead>
+    <tbody>
+        {% for p in professional %}
+            <tr>
+                <td>{{p.username}}</td>
+                <td>{{p.name}}</td>
+                <td>{{p.contact}}</td>
+                <td>{{p.pincode}}</td>
+                <td>{{p.experience}}</td>
+                <td><a class="btn btn-primary" href="">
+                    Choose
+                </a></td> 
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
