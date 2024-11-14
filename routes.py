@@ -272,7 +272,10 @@ def update_professional_post(professional_id):
 def cdashboard():
     user=Customer.query.get(session['user_id'])
     pincode=user.pincode
-    return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
+    search=request.args.get('search')
+    if not search:
+        return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
+    return render_template('cdashboard.html',user=user, services=Service.query.filter(Service.name.ilike('%' + search + '%')).all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
 
 @app.route('/cservices/<int:service_id>', methods=['POST'])
 @auth_required
@@ -280,3 +283,15 @@ def cservices(service_id):
     user=Customer.query.get(session['user_id'])
     pincode=user.pincode
     return render_template('cservice.html',user=user, services=Service.query.filter_by(id=service_id), professional=Professional.query.filter_by(status='Approved', pincode=pincode, service_id=service_id))
+
+@app.route('/cservices/<int:service_id>/cbookaservice/<int:professional_id>')
+@auth_required
+def cbookaservice(service_id, professional_id):
+    user=Customer.query.get(session['user_id'])
+    return render_template('cbookaservice.html',user=user, services=Service.query.get(service_id), professional=Professional.query.get(professional_id))
+
+@app.route('/cservices/<int:service_id>/cbookaservice/<int:professional_id>', methods=['POST'])
+@auth_required
+def cbookaservice_post(service_id, professional_id):
+    user=Customer.query.get(session['user_id'])
+    return redirect(url_for('cdashboard'))

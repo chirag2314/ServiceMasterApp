@@ -71,11 +71,10 @@ class ServiceRequest(db.Model):
     puser=db.Column(db.String(32),db.ForeignKey('professional.username'),nullable=False)
     service_id=db.Column(db.Integer, db.ForeignKey('service.id'), nullable=False)
     requestdate=db.Column(db.DateTime, nullable=False)
-    completedate=db.Column(db.DateTime, nullable=False)
+    completedate=db.Column(db.DateTime, nullable=True)
     status=db.Column(db.String(32), nullable=False)
-    rating=db.Column(db.String(32), nullable=False)
+    rating=db.Column(db.String(32), nullable=True)
     review=db.Column(db.String(512), nullable=True)
-    datetime=db.Column(db.DateTime,nullable=False)
 
     customers=db.relationship('Customer', backref='servicerequests', lazy=True)
     services=db.relationship('Service', backref='servicerequests', lazy=True)

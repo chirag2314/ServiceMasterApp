@@ -5,7 +5,7 @@ Choose your Professional
 {% endblock %}
 
 {% block content %}
-<h1>Hello {{user.name}},</h1>
+
 <h3>Please choose your professional:</h3>
 <table class="table">
     <thead>
@@ -23,7 +23,7 @@ Choose your Professional
                 <td>{{p.contact}}</td>
                 <td>{{p.pincode}}</td>
                 <td>{{p.experience}}</td>
-                <td><a class="btn btn-primary" href="">
+                <td><a class="btn btn-primary" href="{{url_for('cbookaservice', service_id=p.service_id, professional_id=p.id)}}">
                     Choose
                 </a></td> 
             </tr>

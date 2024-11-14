@@ -8,22 +8,32 @@ Customer Dashboard
 <br>
 <h1>Hello, {{user.name}}</h1>
 <br>
-<h2>Services for you:</h2>
-{% include 'searchbar.html' with context %}
+<div class="heading">
+    <h2>Services for you:</h2>
+    <div class="container-fluid">
+        <form class="searchbar">
+        <input type="text" class="form-control" id="search" name="search" placeholder="Search for services">
+        <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
 <br>
 <div class="service-list">
     {% for s in services %}
+    <div class="service">
         <div class="service-info">
             <h4>{{s.name}}</h4>
             <p>{{s.description}}</p>
-            <form action="{{url_for('cservices', service_id=s.id)}}" method="POST">
-                <input type="submit" value="Check Professionals" class="btn btn-success">
+            <p>Price: {{s.price}}/-</p>
+            <form action="{{url_for('cservices', service_id=s.id)}}" method="POST" class="profbutton">
+                <input type="submit" value="Choose a Professional" class="btn btn-success">
             </form>
+        </div>
         </div>
     {% endfor %}
 </div>
 <br>
-<h3>Your active Services:</h3>
+<h3>Your Services:</h3>
 <table class="table">
     <thead>
         <th>Username</th>
@@ -50,6 +60,52 @@ Customer Dashboard
 
 {% block style%}
 <style>
+    .service-list{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: start;
+    }
+    .service{
+        width: 300px;
+        margin: 16px;
+        padding: 16px;
+        border: 1px solid #000;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: flex-start;
+    }
+    .service-info{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2px;
+    }
+    .profbutton{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 2px;
+    }
+    .container-fluid{
+        padding: 15px;
+    }
+    .searchbar{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+    #search{
+        width: 40%;
+    }
+    .heading{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
 
 </style>
 {% endblock %}
