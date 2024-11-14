@@ -22,9 +22,12 @@
             <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
           </li>
           {% elif user and user.utype=='Professional' %}
-          <!-- <li class="nav-item">
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('pdashboard')}}">Dashboard</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{{url_for('pprofile')}}">Profile</a>
-          </li> -->   
+          </li>  
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('logout')}}">Logout</a>
           </li>

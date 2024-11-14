@@ -36,21 +36,26 @@ Customer Dashboard
 <h3>Your Services:</h3>
 <table class="table">
     <thead>
-        <th>Username</th>
+        <th>ID</th>
         <th>Name</th>
-        <th>Contact</th>
-        <th>Service</th>
+        <th>Service ID</th>
         <th>Status</th>
+        <th>Action</th>
         
     </thead>
     <tbody>
-        {% for p in professional %}
+        {% for sr in servreq %}
             <tr>
-                <td>{{p.username}}</td>
-                <td>{{p.name}}</td>
-                <td>{{p.contact}}</td>
-                <td>{{p.service_id}}</td>
-                <td>{{p.status}}</td>
+                <td>{{sr.servicereqid}}</td>
+                <td>{{sr.puser}}</td>
+                <td>{{sr.service_id}}</td>
+                <td>{{sr.status}}</td>
+                <td>
+                    <a class="btn btn-primary" href="{{url_for('close_service', servicereq_id=sr.servicereqid)}}">
+                        <i class="fas fa-edit fa-xs"></i>
+                        Close Service
+                    </a>
+                </td>
                 
             </tr>
         {% endfor %}

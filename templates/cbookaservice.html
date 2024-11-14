@@ -12,13 +12,17 @@ Book Service
         <p>Service Name : {{services.name}}</p>
         <p>Professional Name: {{professional.name}}</p>
         <p>Customer Name: {{user.name}}</p>
-        <p>Request Date: {{Date}}</p>
+        <p>Price: Rs {{services.price}}/-</p>
+        <p id="date">Booking Date:</p>
+        <script>
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString();
+        const message = "Booking Date: " + formattedDate;
+        document.getElementById('date').textContent = message;
+        </script>
     </div>
 
     <form method="post">
-        <label for="date" class="form-label"> Change Username: 
-            <input type="text" name="username" id="username" class="form-control" required>
-        </label>
         <input type="submit" value="Book Service" class="btn btn-success">
     </form>
 {% endblock %}

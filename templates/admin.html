@@ -77,6 +77,28 @@ Admin Dashboard
     <div class="heading">
         <h2 class="text-muted">Service Requests</h2>
     </div>
+    <table class="table">
+        <thead>
+            <th>SR ID</th>
+            <th>Customer</th>
+            <th>Professional</th>
+            <th>Service</th>
+            <th>Request Date</th>
+            <th>Status</th>
+        </thead>
+        <tbody>
+            {% for sr in servreq %}
+                <tr>
+                    <td>{{sr.servicereqid}}</td>
+                    <td>{{sr.cuser}}</td>
+                    <td>{{sr.puser}}</td>
+                    <td>{{sr.service_id}}</td>
+                    <td>{{sr.requestdate}}</td>
+                    <td>{{sr.status}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block style %}

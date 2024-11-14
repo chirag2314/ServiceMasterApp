@@ -1,4 +1,5 @@
 from functools import wraps
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import os
 
@@ -51,7 +52,7 @@ def admin():
         flash('Unauthorized Access')
         session.pop('user_id', None)
         return redirect(url_for('login'))
-    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.all())
+    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.all(), servreq=ServiceRequest.query.all())
 
 
 @app.route('/cprofile')
@@ -82,6 +83,31 @@ def cprofile_post():
     session.pop('user_id', None)
     return redirect(url_for('login'))
 
+@app.route('/pprofile')
+@auth_required
+def pprofile():
+    user=Professional.query.get(session['user_id'])
+    return render_template('pprofile.html',  user=user)
+
+@app.route('/pprofile', methods=['POST'])
+@auth_required
+def pprofile_post():
+    user = Professional.query.get(session['user_id'])
+    username=request.form.get('username')
+    password=request.form.get('password')
+    if username == '' or password == '':
+        flash('Username of Password cannot be empty.')
+        return redirect(url_for('pprofile'))
+    if Professional.query.filter_by(username=username).first() and username != user.username:
+        flash('User exists, Please choose another username')
+        return redirect(url_for('pprofile'))       
+    user.username = username
+    user.password = password
+    db.session.commit()
+    flash('Details Updated successfully')
+    session.pop('user_id', None)
+    return redirect(url_for('login'))
+
 @app.route('/login')
 def login():
     return render_template('login.html')
@@ -104,7 +130,7 @@ def login_post():
             return redirect(url_for('login'))
         session['user_id'] = puser.id
         type='P'
-        return redirect(url_for('pprofile'))
+        return redirect(url_for('pdashboard'))
     if usertype=='customer':
         if username == '' or password == '':
             flash('Username or Password cannot be empty.')
@@ -168,7 +194,7 @@ def pregister_post():
         flash('Invalid file, please upload .pdf, .doc or .docx files only')
         return redirect(url_for('pregister'))
     file_path = os.path.join('uploads', profile.filename)
-    profile.save(file_path) #doubtful
+    profile.save(file_path)
     status='Pending'
     puser=Professional(username=username, password=password, name=name, contact=contact, service_id=service, experience=experience, pincode=pincode,status=status, profile=file_path)
     db.session.add(puser)
@@ -274,8 +300,8 @@ def cdashboard():
     pincode=user.pincode
     search=request.args.get('search')
     if not search:
-        return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
-    return render_template('cdashboard.html',user=user, services=Service.query.filter(Service.name.ilike('%' + search + '%')).all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode))
+        return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode), servreq=ServiceRequest.query.filter_by(cuser=user.username))
+    return render_template('cdashboard.html',user=user, services=Service.query.filter(Service.name.ilike('%' + search + '%')).all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode), servreq=ServiceRequest.query.filter_by(cuser=user.username))
 
 @app.route('/cservices/<int:service_id>', methods=['POST'])
 @auth_required
@@ -294,4 +320,54 @@ def cbookaservice(service_id, professional_id):
 @auth_required
 def cbookaservice_post(service_id, professional_id):
     user=Customer.query.get(session['user_id'])
+    prof=Professional.query.get(professional_id)
+    serv=Service.query.get(service_id)
+    sr=ServiceRequest(cuser=user.username, puser=prof.username, service_id=serv.id,requestdate=datetime.today(),status='Requested')
+    db.session.add(sr)
+    db.session.commit()
+    flash("Congrats, Booking Created")
+    return redirect(url_for('cdashboard'))
+
+@app.route('/pdashboard')
+@auth_required
+def pdashboard():
+    user=Professional.query.get(session['user_id'])
+    return render_template('pdashboard.html',user=user, servreq=ServiceRequest.query.filter_by(puser=user.username))
+
+@app.route('/pdashboard/<int:servicereq_id>/peditservicerequest')
+@auth_required
+def peditservicerequest(servicereq_id):
+    user=Professional.query.get(session['user_id'])
+    return render_template('peditservicerequest.html',user=user, servreq=ServiceRequest.query.get(servicereq_id))
+
+@app.route('/pdashboard/<int:servicereq_id>/peditservicerequest', methods=['POST'])
+@auth_required
+def peditservicerequest_post(servicereq_id):
+    servr=ServiceRequest.query.get(servicereq_id)    
+    if not servr:
+        flash('Request does not exist')
+        return redirect(url_for('pdashboard'))
+    status=request.form.get('status')
+    servr.status=status
+    db.session.commit()
+    flash('Request Status Updated Successfully')
+    return redirect(url_for('pdashboard'))
+
+@app.route('/cdashboard/<int:servicereq_id>/ccloseservice')
+@auth_required
+def close_service(servicereq_id):
+    return render_template('ccloseservice.html',servreq=ServiceRequest.query.get(servicereq_id))
+
+
+@app.route('/cdashboard/<int:servicereq_id>/ccloseservice', methods=['POST'])
+@auth_required
+def close_service_post(servicereq_id):
+    servr=ServiceRequest.query.get(servicereq_id)
+    rating=request.form.get('rating')
+    review=request.form.get('review')
+    servr.rating=rating
+    servr.review=review
+    servr.completedate=datetime.today()
+    servr.status='Closed'
+    db.session.commit()
     return redirect(url_for('cdashboard'))

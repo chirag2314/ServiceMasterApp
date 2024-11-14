@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Update Service Request 
+{% endblock %}
+
+{% block content %}
+    <h1>Update Service Request</h1>
+    <h2>You are currently updating the Status for Request {{servreq.id}}</h2>
+    <form  method="post" class="form">
+        <label for="status">Service Request Status</label>
+        <select name="status" id="status">
+          <option value="Accepted">Accepted</option>
+          <option value="Declined">Declined</option>
+        </select> 
+    <br>
+    <input type="submit" value="Update Request" class="btn btn-success">
+    </form>
+{% endblock %}
+
+{% block style %}
+    <style>
+        h1,h2 {
+            text-align: center;
+            padding: 10px;
+        }
+        form {
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
+{% endblock %}
