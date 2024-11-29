@@ -39,6 +39,7 @@ class Professional(db.Model):
     utype=db.Column(db.String(16), nullable=False, default='Professional')
     status=db.Column(db.String(16), nullable=True, default='Pending')
     profile=db.Column(db.String(512), nullable=False)
+    is_admin=db.Column(db.Boolean, nullable=False, default=False)
     
     @property
     def password(self):
@@ -85,5 +86,7 @@ with app.app_context():
     cadmin = Customer.query.filter_by(username='admin').first()
     if not cadmin:
         admin=Customer(username='admin', password='admin', name='admin', pincode='000000', is_admin=True)
+        admin2=Professional(username='admin', password='admin',name='admin',contact='0000000000', pincode='000000', service_id='0', experience='1',utype='Professional', status='Admin',profile='Admin', is_admin=True)
         db.session.add(admin)
+        db.session.add(admin2)
         db.session.commit()

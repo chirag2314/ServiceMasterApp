@@ -14,7 +14,6 @@ Professional Dashboard
             <th>SR ID</th>
             <th>Customer</th>
             <th>Professional</th>
-            <th>Service</th>
             <th>Request Date</th>
             <th>Status</th>
             <th>Action</th>
@@ -25,14 +24,17 @@ Professional Dashboard
                     <td>{{sr.servicereqid}}</td>
                     <td>{{sr.cuser}}</td>
                     <td>{{sr.puser}}</td>
-                    <td>{{sr.service_id}}</td>
                     <td>{{sr.requestdate}}</td>
                     <td>{{sr.status}}</td>
                     <td>
-                    <a class="btn btn-primary" href="{{url_for('peditservicerequest', servicereq_id=sr.servicereqid)}}">
-                        <i class="fas fa-edit fa-xs"></i>
-                        Edit
-                    </a>
+                    {% if sr.status == 'Requested' or sr.status == 'Accepted' %}
+                        <a class="btn btn-primary" href="{{url_for('peditservicerequest', servicereq_id=sr.servicereqid)}}">
+                            <i class="fas fa-edit fa-xs"></i>
+                            Edit
+                        </a>
+                   {% else %}
+                       Service is {{sr.status}}
+                   {% endif %}
                 </td>
                 </tr>
             {% endfor %}

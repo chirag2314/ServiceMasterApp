@@ -40,21 +40,39 @@ Customer Dashboard
         <th>Name</th>
         <th>Service ID</th>
         <th>Status</th>
+        <th>Completed Date</th>
+        <th>Rating</th>
+        <th>Review</th>
         <th>Action</th>
-        
     </thead>
     <tbody>
         {% for sr in servreq %}
             <tr>
-                <td>{{sr.servicereqid}}</td>
-                <td>{{sr.puser}}</td>
-                <td>{{sr.service_id}}</td>
-                <td>{{sr.status}}</td>
+                <td>{{ sr.servicereqid }}</td>
+                <td>{{ sr.puser }}</td>
+                <td>{{ sr.service_id }}</td>
+                <td>{{ sr.status }}</td>
+                {% if sr.status != 'Completed' %}
+                    <td>{{ sr.completedate }}</td>
+                {% else %}
+                    <td> Service is {{ sr. status }}</td>
+                {% endif %}
+                {% if sr.status != 'Declined' %}
+                    <td>{{ sr.rating if sr.rating else 'N/A' }}</td>
+                    <td>{{ sr.review if sr.review else 'N/A' }}</td>
+                {% else %}
+                    <td>N/A</td>
+                    <td>N/A</td>
+                {% endif %}
                 <td>
-                    <a class="btn btn-primary" href="{{url_for('close_service', servicereq_id=sr.servicereqid)}}">
-                        <i class="fas fa-edit fa-xs"></i>
-                        Close Service
-                    </a>
+                    {% if sr.status == 'Requested' or sr.status == 'Accepted' %}
+                         <a class="btn btn-primary" href="{{ url_for('close_service', servicereq_id=sr.servicereqid) }}">
+                            <i class="fas fa-edit fa-xs"></i>
+                            Close Service
+                        </a>
+                    {% else %}
+                        Service is {{sr.status}}
+                    {% endif %}
                 </td>
                 
             </tr>

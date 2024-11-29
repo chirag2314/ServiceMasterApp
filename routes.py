@@ -7,8 +7,6 @@ from models import db, Customer, Professional, Service, ServiceRequest
 
 from app import app
 
-type='C'
-
 def auth_required(func):
     @wraps(func)
     def inner(*args, **kwargs):
@@ -25,47 +23,12 @@ def admin_required(func):
             flash('Please Login')
             return redirect(url_for('login'))
         cuser=Customer.query.get(session['user_id'])
-        if type != 'C':
-            flash('Unauthorzied Access')
-            return redirect(url_for('login'))
-        else:
-            if not cuser.is_admin:
-                flash('Unauthorzied Access')
-                return redirect(url_for('login'))
-            else:
-               return func(*args, **kwargs) 
-    return inner
-
-def prof_required(func):
-    @wraps(func)
-    def inner(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please Login')
-            return redirect(url_for('login'))
         puser=Professional.query.get(session['user_id'])
-        if type != 'P':
+        if not cuser.is_admin or not puser.is_admin:
             flash('Unauthorzied Access')
             return redirect(url_for('login'))
         else:
             return func(*args, **kwargs) 
-    return inner
-
-def cust_required(func):
-    @wraps(func)
-    def inner(*args, **kwargs):
-        if 'user_id' not in session:
-            flash('Please Login')
-            return redirect(url_for('login'))
-        cuser=Customer.query.get(session['user_id'])
-        if type != 'C':
-            flash('Unauthorzied Access')
-            return redirect(url_for('login'))
-        else:
-            if cuser.is_admin:
-                flash('Unauthorzied Access')
-                return redirect(url_for('login'))
-            else:
-               return func(*args, **kwargs) 
     return inner
 
 @app.route('/')
@@ -87,11 +50,11 @@ def admin():
         flash('Unauthorized Access')
         session.pop('user_id', None)
         return redirect(url_for('login'))
-    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.all(), servreq=ServiceRequest.query.all())
+    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.filter_by(is_admin=False), servreq=ServiceRequest.query.all())
 
 
 @app.route('/cprofile')
-@cust_required
+@auth_required
 def cprofile():
     user=Customer.query.get(session['user_id'])
     if user.is_admin:
@@ -100,7 +63,7 @@ def cprofile():
         return render_template('cprofile.html',  user=user)
 
 @app.route('/cprofile', methods=['POST'])
-@cust_required
+@auth_required
 def cprofile_post():
     user = Customer.query.get(session['user_id'])
     username=request.form.get('username')
@@ -119,13 +82,13 @@ def cprofile_post():
     return redirect(url_for('login'))
 
 @app.route('/pprofile')
-@prof_required
+@auth_required
 def pprofile():
     user=Professional.query.get(session['user_id'])
     return render_template('pprofile.html',  user=user)
 
 @app.route('/pprofile', methods=['POST'])
-@prof_required
+@auth_required
 def pprofile_post():
     user = Professional.query.get(session['user_id'])
     username=request.form.get('username')
@@ -164,7 +127,8 @@ def login_post():
             flash('Incorrect Username or Password.')
             return redirect(url_for('login'))
         session['user_id'] = puser.id
-        type='P'
+        if puser.is_admin:
+            return redirect(url_for('admin'))
         return redirect(url_for('pdashboard'))
     if usertype=='customer':
         if username == '' or password == '':
@@ -178,7 +142,6 @@ def login_post():
             flash('Incorrect Username or Password.')
             return redirect(url_for('login'))
         session['user_id'] = cuser.id
-        type='C'
         if cuser.is_admin:
             return redirect(url_for('admin'))
         return redirect(url_for('cdashboard'))
@@ -329,30 +292,28 @@ def update_professional_post(professional_id):
     return redirect(url_for('admin'))
 
 @app.route('/cdashboard')
-@cust_required
+@auth_required
 def cdashboard():
     user=Customer.query.get(session['user_id'])
-    pincode=user.pincode
     search=request.args.get('search')
     if not search:
-        return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode), servreq=ServiceRequest.query.filter_by(cuser=user.username))
-    return render_template('cdashboard.html',user=user, services=Service.query.filter(Service.name.ilike('%' + search + '%')).all(), professional=Professional.query.filter_by(status='Approved', pincode=pincode), servreq=ServiceRequest.query.filter_by(cuser=user.username))
+        return render_template('cdashboard.html',user=user, services=Service.query.all(), professional=Professional.query.filter_by(status='Approved'), servreq=ServiceRequest.query.filter_by(cuser=user.username))
+    return render_template('cdashboard.html',user=user, services=Service.query.filter(Service.name.ilike('%' + search + '%')).all(), professional=Professional.query.filter_by(status='Approved'), servreq=ServiceRequest.query.filter_by(cuser=user.username))
 
 @app.route('/cservices/<int:service_id>', methods=['POST'])
-@cust_required
+@auth_required
 def cservices(service_id):
     user=Customer.query.get(session['user_id'])
-    pincode=user.pincode
-    return render_template('cservice.html',user=user, services=Service.query.filter_by(id=service_id), professional=Professional.query.filter_by(status='Approved', pincode=pincode, service_id=service_id))
+    return render_template('cservice.html',user=user, services=Service.query.filter_by(id=service_id), professional=Professional.query.filter_by(status='Approved', service_id=service_id))
 
 @app.route('/cservices/<int:service_id>/cbookaservice/<int:professional_id>')
-@cust_required
+@auth_required
 def cbookaservice(service_id, professional_id):
     user=Customer.query.get(session['user_id'])
     return render_template('cbookaservice.html',user=user, services=Service.query.get(service_id), professional=Professional.query.get(professional_id))
 
 @app.route('/cservices/<int:service_id>/cbookaservice/<int:professional_id>', methods=['POST'])
-@cust_required
+@auth_required
 def cbookaservice_post(service_id, professional_id):
     user=Customer.query.get(session['user_id'])
     prof=Professional.query.get(professional_id)
@@ -364,19 +325,19 @@ def cbookaservice_post(service_id, professional_id):
     return redirect(url_for('cdashboard'))
 
 @app.route('/pdashboard')
-@prof_required
+@auth_required
 def pdashboard():
     user=Professional.query.get(session['user_id'])
     return render_template('pdashboard.html',user=user, servreq=ServiceRequest.query.filter_by(puser=user.username))
 
 @app.route('/pdashboard/<int:servicereq_id>/peditservicerequest')
-@prof_required
+@auth_required
 def peditservicerequest(servicereq_id):
     user=Professional.query.get(session['user_id'])
     return render_template('peditservicerequest.html',user=user, servreq=ServiceRequest.query.get(servicereq_id))
 
 @app.route('/pdashboard/<int:servicereq_id>/peditservicerequest', methods=['POST'])
-@prof_required
+@auth_required
 def peditservicerequest_post(servicereq_id):
     servr=ServiceRequest.query.get(servicereq_id)    
     if not servr:
@@ -389,13 +350,13 @@ def peditservicerequest_post(servicereq_id):
     return redirect(url_for('pdashboard'))
 
 @app.route('/cdashboard/<int:servicereq_id>/ccloseservice')
-@cust_required
+@auth_required
 def close_service(servicereq_id):
     return render_template('ccloseservice.html',servreq=ServiceRequest.query.get(servicereq_id))
 
 
 @app.route('/cdashboard/<int:servicereq_id>/ccloseservice', methods=['POST'])
-@cust_required
+@auth_required
 def close_service_post(servicereq_id):
     servr=ServiceRequest.query.get(servicereq_id)
     rating=request.form.get('rating')
