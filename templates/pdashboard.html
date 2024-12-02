@@ -5,7 +5,8 @@ Professional Dashboard
 {% endblock %}
 
 {% block content %}
-    <h1>Hello @{{user.name}}</h1>
+    <h1>Hello {{user.name}},</h1>
+    <h4 class="text-muted">Welcome back</h4>
     <div class="heading">
         <h2 class="text-muted">Service Requests</h2>
     </div>
@@ -49,8 +50,11 @@ Professional Dashboard
             justify-content: space-between;
             align-items: center;
         }
-        h1 {
-            text-align: center;
+        h1{
+            padding-top: 25px;
+        }
+        h4{
+            padding-bottom: 25px;
         }
     </style>
 {% endblock %}

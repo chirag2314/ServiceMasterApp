@@ -32,15 +32,8 @@ def admin_required(func):
     return inner
 
 @app.route('/')
-@auth_required
 def defaultpage():
-    if type=='P':
-        return render_template('defaultpage.html', user=Professional.query.get(session['user_id']))
-    else:
-        user=Customer.query.get(session['user_id'])
-        if user.is_admin:
-            return redirect(url_for('admin'))
-        return render_template('defaultpage.html', user=Customer.query.get(session['user_id']))
+    return render_template('index.html')
 
 @app.route('/admin')
 @admin_required
@@ -50,7 +43,10 @@ def admin():
         flash('Unauthorized Access')
         session.pop('user_id', None)
         return redirect(url_for('login'))
-    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.filter_by(is_admin=False), servreq=ServiceRequest.query.all())
+    psearch=request.args.get('psearch')
+    if not psearch:
+        return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.filter_by(is_admin=False), servreq=ServiceRequest.query.all())
+    return render_template('admin.html', user=user, service=Service.query.all(), professional=Professional.query.filter(Professional.username.ilike('%' + psearch + '%')).all(), servreq=ServiceRequest.query.all())
 
 
 @app.route('/cprofile')
@@ -230,7 +226,7 @@ def add_service_post():
 @app.route('/services/<int:service_id>/edit')
 @admin_required
 def edit_service(service_id):
-    return render_template('services/editservice.html', service=Service.query.get(service_id))
+    return render_template('services/editservice.html',user=Customer.query.get(session['user_id']), service=Service.query.get(service_id))
 
 @app.route('/services/<int:service_id>/edit', methods=['POST'])
 @admin_required
@@ -258,7 +254,7 @@ def edit_service_post(service_id):
 @app.route('/services/<int:service_id>/delete')
 @admin_required
 def delete_service(service_id):
-    return render_template('services/deleteservice.html', service=Service.query.get(service_id))
+    return render_template('services/deleteservice.html',user=Customer.query.get(session['user_id']), service=Service.query.get(service_id))
 
 @app.route('/services/<int:service_id>/delete', methods=['POST'])
 @admin_required
@@ -276,7 +272,7 @@ def delete_service_post(service_id):
 @app.route('/services/<int:professional_id>/updatestatus')
 @admin_required
 def update_professional(professional_id):
-    return render_template('professionals/updatestatus.html', professional=Professional.query.get(professional_id))
+    return render_template('professionals/updatestatus.html',user=Customer.query.get(session['user_id']), professional=Professional.query.get(professional_id))
 
 @app.route('/services/<int:professional_id>/updatestatus', methods=['POST'])
 @admin_required
@@ -352,7 +348,7 @@ def peditservicerequest_post(servicereq_id):
 @app.route('/cdashboard/<int:servicereq_id>/ccloseservice')
 @auth_required
 def close_service(servicereq_id):
-    return render_template('ccloseservice.html',servreq=ServiceRequest.query.get(servicereq_id))
+    return render_template('ccloseservice.html',servreq=ServiceRequest.query.get(servicereq_id), user=Customer.query.get(session['user_id']))
 
 
 @app.route('/cdashboard/<int:servicereq_id>/ccloseservice', methods=['POST'])

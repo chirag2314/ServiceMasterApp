@@ -9,14 +9,18 @@ Update Professional
     <h2>You are currently updating the Status for {{professional.name}}</h2>
     <form  method="post" class="form">
         <label for="status">Professional Status</label>
-        <select name="status" id="status">
-          <option value="Pending">Pending</option>
-          <option value="Approved">Approved</option>
-          <option value="Rejected">Rejected</option>
-        </select> 
+        <div class="status">
+            <select name="status" id="status">
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            </select> 
+        </div>
     <br>
-    <input type="submit" value="Update Professional" class="btn btn-success">
-    </form>
+    <div class="btn">
+        <input type="submit" value="Update Professional" class="btn btn-dark">
+    </div>
+</form>
+
 {% endblock %}
 
 {% block style %}
@@ -26,10 +30,18 @@ Update Professional
             padding: 10px;
         }
         form {
+            padding-top: 50px;
             padding-bottom: 10px;
             display: flex;
             align-items: center;
             flex-direction: column;
         }
+        .status{
+            padding-top: 20px;
+        }
+        .btn{
+            padding-top: 10px;
+        }
+        
     </style>
 {% endblock %}

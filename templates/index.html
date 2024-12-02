@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+ServiceMasterApp 
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Welcome to ServiceMasterApp</h1>
+    <h3>Your one stop place for all the household services</h3>
+</div>
+<div class="btns">
+    <div class="btns2">
+    <label for="login" style="padding: 10px;">Already Registered?</label>
+    <a class="btn btn-primary" href="{{ url_for('login')}}">
+        Login
+    </a>
+    </div>
+    <br>
+    <div class="btns2">
+    <label for="cregister" style="padding: 10px;">Not yet registered?</label>
+    <a class="btn btn-primary" href="{{ url_for('cregister')}}">
+        Register as Customer
+    </a>
+    </div>
+    <br>
+    <div class="btns2">
+    <label for="pregister"  style="padding: 10px;">Want to register your services?</label>
+    <a class="btn btn-primary" href="{{ url_for('pregister')}}">
+        Register as Professional
+    </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<style>
+    .header{
+        text-align: center;
+        padding-top: 25px;
+    }
+    .btns{
+        padding: 50px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    .btns2{
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    
+</style>
+{% endblock %}

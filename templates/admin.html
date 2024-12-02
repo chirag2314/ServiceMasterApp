@@ -47,6 +47,12 @@ Admin Dashboard
     <br>
     <div class="heading">
         <h2 class="text-muted">Professionals</h2>
+        <div class="container-fluid">
+            <form class="psearchbar">
+            <input type="text" class="form-control" id="psearch" name="psearch" placeholder="Search for professionals">
+            <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
     </div>
     <table class="table">
         <thead>
@@ -107,9 +113,18 @@ Admin Dashboard
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-direction: row;
+            margin-bottom: 10px;
         }
         h1 {
             text-align: center;
+        }
+        .psearchbar{
+            display: flex;
+            flex-direction: row;
+            align-items: flex-end; 
+            width: 50%;
+            margin-left: 50%;
         }
     </style>
 {% endblock %}
