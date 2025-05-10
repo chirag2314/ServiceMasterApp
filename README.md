@@ -29,17 +29,17 @@ ServiceMasterApp is a multi-user household services application developed as par
 
 ## Tech Stack
 ### Backend:
-**Flask** - Lightweight web framework
-**SQLAlchemy** - ORM for database operations
-**SQLite** - Database
+- **Flask** - Lightweight web framework
+- **SQLAlchemy** - ORM for database operations
+- **SQLite** - Database
 
 ### Frontend:
-**HTML/CSS** - Frontend Markup and styling
-**Bootstrap** - Responsive UI Components
+- **HTML/CSS** - Frontend Markup and styling
+- **Bootstrap** - Responsive UI Components
 
 ## Setup:
 
-1. 1. **Clone the Repository**
+1. **Clone the Repository**
    ```bash
    git clone https://github.com/chirag2314/ServiceMasterApp.git
    cd ServiceMasterApp
