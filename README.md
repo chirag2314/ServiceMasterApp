@@ -14,7 +14,7 @@ ServiceMasterApp is a multi-user household services application developed as par
 1. Can search for services based on name
 2. Can book a Service Request for Professional of their choice
 3. Can close a Service Request with Review and Rating
-4. Modiy personal details and password
+4. Modify personal details and password
 5. (WIP) Summary Page with service request history
 
 ### Professionals
